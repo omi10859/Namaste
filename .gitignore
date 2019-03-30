@@ -4,3 +4,4 @@ temp/
 .vscode/
 *.log
 .env
+db.sqlite3
