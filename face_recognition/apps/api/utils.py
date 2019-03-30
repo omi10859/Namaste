@@ -6,7 +6,7 @@ class NoFaceDetectedError(Exception):
 
 def detect_mood(img):
 
-    client = boto3.client('rekognition')
+    client = boto3.client('rekognition', region_name='ap-south-1')
 
     response = client.detect_faces(
             Image = {
