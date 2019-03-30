@@ -2,7 +2,7 @@ from django.http import JsonResponse, HttpResponseBadRequest
 from django.contrib.auth import authenticate, login, logout
 
 from apps.accounts.models import User
-
+from apps.user_data.models import Mood
 from .utils import detect_mood
 
 def check_ajax(func):
@@ -126,6 +126,8 @@ def GetUserMoodFromImageView(request):
         img += '='* (4 - missing_padding)
 
     mood = detect_mood(img)
+
+    Mood.record_mood(user, mood);
 
     return JsonResponse({
         'status': True,
