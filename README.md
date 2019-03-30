@@ -11,6 +11,17 @@ Another use case involves tracking of employee's health and behaviour throughout
 
 ## Steps to Setup :scroll:
 
+You have to fork and clone the project to follow the following setup guidelines:
+### 1. Create Virtual Environment :earth_asia:
+
+
+### 2. Install requirements :information_source:
+
+
+### 3. 
+
+## Steps to Contribute :scroll:
+
 ### 1. Fork it :fork_and_knife:
 
 You can get a fork/copy of [Namaste](https://github.com/omi10859/Namaste) by using the <kbd><b>Fork</b></kbd></a> button.
