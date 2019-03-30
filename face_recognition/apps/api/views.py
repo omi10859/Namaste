@@ -127,7 +127,7 @@ def GetUserMoodFromImageView(request):
 
     mood = detect_mood(img)
 
-    Mood.record_mood(user, mood);
+    Mood.record_mood(request.user, mood);
 
     return JsonResponse({
         'status': True,
