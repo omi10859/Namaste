@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'apps.core',
     'apps.email_app',
+    'apps.user_data',
     'apps.accounts',
     'apps.portal',
     'apps.api',
