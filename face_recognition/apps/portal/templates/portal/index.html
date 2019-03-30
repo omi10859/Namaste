@@ -180,7 +180,8 @@
         background: black;
     }
     #main {
-        
+        position: relative;
+        z-index: 1;        
         color: #02feff;
         padding: 0px;
     }
@@ -687,8 +688,8 @@
 
     .arc_reactor {
         position: relative;
-        top: 50%;
-        margin-top: -125px;
+        top: 10%;
+        /* margin-top: px; */
         margin-left: auto;
         margin-right: auto;
         width: 250px;
@@ -1135,6 +1136,23 @@
         font-family: 'Agency FB', sans-serif;
         font-size: 20px;
     }
+    .arc_input {
+        position: absolute;
+        left: 0;
+        right: 0;
+        width: 250px;
+        margin: 150px auto 10px auto;
+        z-index: 2;
+    }
+    .arc_input_input {
+        border: 0;
+        position: relative;
+        outline: none;
+        background: transparent;
+        color: #049372;
+        font-size: 30px;
+        text-align: center;
+    }
 </style>
 {% endblock %}
 {% block page %}
@@ -1324,6 +1342,9 @@
                     <li></li>
                 </ul>
             </div>
+        </div>
+        <div class="arc_input">
+            <input type="text" class="arc_input_input w-100" id="commandbox" placeholder="Let's talk!"/>
         </div>
     </div>
 
