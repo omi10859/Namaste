@@ -5,37 +5,59 @@
 
 {% block header_css %}
 <style>
+    @import url(http://weloveiconfonts.com/api/?family=entypo);
+
+    /* Font / Universal Properties */
+    [class*="entypo-"]:before {
+        font-family: 'entypo', sans-serif;
+        transition: 0.3s;
+    }
+
+    * {
+        user-select: none;
+        font: 20px 'Agency FB', sans-serif;
+    }
     #login {
-        background-color: rgba(46, 49, 49, 1);
+        background-color: #000;
     }
     #heading {
         width: 100%;
         text-align: center;
         font-size: 72px;
-        color: #fff;
-        font-family: 'Fredoka One', cursive;
+        color: rgba(2, 255, 255, 0.6);
+        font-family: 'Agency FB', cursive;
+        transition: 0.5s all;
+    }
+    #heading:hover {
+        color: rgba(2, 255, 255, 0.8);
     }
     .step {
         margin-top: 50px;
         display: none;
+        width: 80%;
     }
     .step.active {
         display: block;
     }
+    .step-label {
+        font-size: 48px;
+        color: rgba(2, 255, 255, 0.8);
+    }
     .step-input {
-        width: 75%;
+        width: 50%;
         border: 0;
         background: transparent;
         font-size: 48px;
         color: rgba(255,255,255,0.7);
         outline: none;
         margin: 0 auto;
-        border-bottom: 2px solid rgba(255,255,255,0.2);
+        /* border-bottom: 2px solid rgba(255,255,255,0.2); */
         transition: 0.3s all;
-        text-align: center;
+        /* text-align: center; */
+        margin-left: 10px;
     }
     .step-input:focus {
-        border-bottom-color: rgba(255,255,255,0.5);
+        /* border-bottom-color: rgba(255,255,255,0.5); */
     }
 </style>
 {% endblock %}
@@ -43,16 +65,16 @@
 {% block page %}
 
     <section class="container-fluid full-page" id="login">
-        <div id="heading">Let's get started</div>
+        <div id="heading">NAMASTE v1</div>
         <div class="steps text-center">
             {% csrf_token %}
-            <div class="step" id="step1">
-                <input class="step-input" name="email" type="email" placeholder="Enter your email address" />
+            <div class="step mx-auto" id="step1">
+                <span class="step-label">Email ></span> <input class="step-input" name="email" type="email" placeholder="Enter your email address" />
             </div>
-            <div class="step" id="step2">
-                <input class="step-input" name="password" type="password" placeholder="Enter your login password" />
+            <div class="step mx-auto" id="step2">
+                <span class="step-label">Password ></span> <input class="step-input" name="password" type="password" placeholder="Enter your login password" />
             </div>
-            <div class="step" id="step3">
+            <div class="step mx-auto" id="step3">
                 <input class="step-input" name="fname" type="text" placeholder="What shall we call you?" />
             </div>
         </div>
