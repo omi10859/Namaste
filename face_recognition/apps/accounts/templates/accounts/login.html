@@ -1,0 +1,194 @@
+{% extends 'accounts/_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Login{% endblock %}
+
+{% block header_css %}
+<style>
+    #login {
+        background-color: rgba(46, 49, 49, 1);
+    }
+    #heading {
+        width: 100%;
+        text-align: center;
+        font-size: 72px;
+        color: #fff;
+        font-family: 'Fredoka One', cursive;
+    }
+    .step {
+        margin-top: 50px;
+        display: none;
+    }
+    .step.active {
+        display: block;
+    }
+    .step-input {
+        width: 75%;
+        border: 0;
+        background: transparent;
+        font-size: 48px;
+        color: rgba(255,255,255,0.7);
+        outline: none;
+        margin: 0 auto;
+        border-bottom: 2px solid rgba(255,255,255,0.2);
+        transition: 0.3s all;
+        text-align: center;
+    }
+    .step-input:focus {
+        border-bottom-color: rgba(255,255,255,0.5);
+    }
+</style>
+{% endblock %}
+
+{% block page %}
+
+    <section class="container-fluid full-page" id="login">
+        <div id="heading">Let's get started</div>
+        <div class="steps text-center">
+            {% csrf_token %}
+            <div class="step" id="step1">
+                <input class="step-input" name="email" type="email" placeholder="Enter your email address" />
+            </div>
+            <div class="step" id="step2">
+                <input class="step-input" name="password" type="password" placeholder="Enter your login password" />
+            </div>
+            <div class="step" id="step3">
+                <input class="step-input" name="fname" type="text" placeholder="What shall we call you?" />
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block footer_js %}
+<script>
+    $(document).ready(function(e){
+
+        /** CSRF Protection **/
+        var csrf = $("[name=csrfmiddlewaretoken]").val();
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf);
+                }
+            }
+        });
+        /** End CSRF Protection **/
+
+        var step1 = $("#step1");
+        var step2 = $("#step2");
+        var step3 = $("#step3");
+        var user = null;
+        step1.fadeIn();
+        step1.on("keydown", function(e){
+            if(e.keyCode == 13){
+                checkAccount();
+            }
+        });
+
+        function checkAccount(){
+            step1.find("input").attr('readonly', 'readonly');
+            let val = step1.find("input").val();
+            $.ajax({
+                url: "{% url 'api:get-user-by-email' %}",
+                data: 'email='+val,
+                dataType: 'JSON',
+                method: 'GET',
+                success: function(response){
+                    if(response.status == true){
+                        user = response.data;
+                        if(response.data.email_confirmed){
+                            switchToStep2();
+                        }else{
+                            showEmailNotConfirmed();
+                        }
+                    }else{
+                        step1.find("input").removeAttr('readonly');
+                        if(response.error){
+                            console.log(response);
+                        }else{
+                            setHeading("No account exists with given email!");
+                        }
+                    }
+                }
+            })
+        }
+
+        function switchToStep2(newUser = false){
+            step1.fadeOut(500);
+            setTimeout(function(e){
+                if(!newUser){
+                    setHeading("Welcome " + user.name);
+                }else{
+                    setHeading("No account found!");
+                }
+                step2.fadeIn(500);
+                bindStep2();
+            }, 500);
+        }
+
+        function switchToStep3(){
+            if(user) return;
+
+            step2.fadeOut();
+            setTimeout(function(e){
+                setHeading("Almost there!");
+                step3.fadeIn(500);
+                bindStep3();
+            }, 500);
+        }
+
+        function bindStep2(){
+            step2.on("keydown", function(e){
+                if(e.keyCode == 13){
+                    if(user)
+                        submitForm();   
+                    else
+                        switchToStep3();
+                }
+            });
+        }
+
+
+        function submitForm(){
+            var email = step1.find('input').val();
+            var password = step2.find('input').val();
+            
+            if(user){
+                //Login
+                $.ajax({
+                    url: "{% url 'api:login' %}",
+                    data: 'email=' + email + "&password=" + password,
+                    method: 'POST',
+                    dataType: "JSON",
+                    success: function(response){
+                        if(response.status == true){
+                            window.location.href = "{% url 'portal:home' %}";
+                        }else{
+                            if(response.err_cd == "INCORRECT_PASS"){
+                                setHeading("Incorrect Password!");
+                            }else{
+                                setHeading(response.error);
+                            }
+                        }
+                    }
+                })
+            }else{
+
+            }
+        }
+
+        function showEmailNotConfirmed(){
+            setHeading("Your email is not confirmed!");
+        }
+
+        function setHeading(msg){
+            $("#heading").html(msg);
+        }
+    });
+</script>
+{% endblock %}

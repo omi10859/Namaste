@@ -25,7 +25,7 @@ SECRET_KEY = 'ot!2-fkm7dws_8=n#k3dovk6tlygha5xkid!qc_bvu6ta7g7!z'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,7 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'portal',
+    'crispy_forms',
+    'apps.core',
+    'apps.email_app',
+    'apps.accounts',
+    'apps.portal',
+    'apps.api',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +60,9 @@ ROOT_URLCONF = 'sfx.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,3 +128,16 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
+
+AUTH_USER_MODEL = "accounts.User"
+
+LOGIN_REDIRECT_URL = "/"
+LOGIN_URL = "/accounts/login/"
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+ROLEPERIMISSIONS_MODULE = 'accounts.roles'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "..", "static")
+]
