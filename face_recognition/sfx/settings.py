@@ -127,6 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
 
@@ -140,5 +141,5 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 ROLEPERIMISSIONS_MODULE = 'accounts.roles'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "..", "static")
+    os.path.join(BASE_DIR, "static")
 ]
