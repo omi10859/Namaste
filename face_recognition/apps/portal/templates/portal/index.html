@@ -55,24 +55,24 @@
         </span> <br />
 
         <span class="menuitem entypo-chart-pie" style="font-size: 30px; margin-left: 10px;">
-            <p id="proc" class="caption" style="font-size: 20px;">Some New Metric Here</p>
+            <p id="proc" class="caption" style="font-size: 20px;">Health Score: <span class="current_mood_score"></span></p>
         </span>
 
-        <p class="title">Explore</p>
+        <p class="title">My Preferences</p>
         <div class="hline title_underline"></div>
 
         <div class="menu">
-            <button class="menuitem"> <span class="entypo-right-open" />
-                <p class="caption">News</p>
+            <button class="menuitem my-category" data-category="technology"> <span class="entypo-right-open" />
+                <p class="caption">Technology</p>
             </button>
-            <button class="menuitem"> <span class="entypo-right-open" />
-                <p class="caption">Music</p>
+            <button class="menuitem my-category" data-category="business"> <span class="entypo-right-open" />
+                <p class="caption">Business</p>
             </button>
-            <button class="menuitem"> <span class="entypo-right-open" />
-                <p class="caption">Social</p>
+            <button class="menuitem my-category" data-category="music"> <span class="entypo-right-open" />
+                <p class="caption">Entertainment</p>
             </button>
-            <button class="menuitem"> <span class="entypo-right-open" />
-                <p class="caption">...</p>
+            <button class="menuitem my-category" data-category="general"> <span class="entypo-right-open" />
+                <p class="caption">General</p>
             </button>
 
             <hr style="border-color: transparent; margin: 0;" />
@@ -106,13 +106,25 @@
 
     <!-- Right Menu -->
     <div id="rightmenu">
-        <p class="title" style="text-align: left; margin-left: 10px;">My Feed</p>
+        <p class="title" style="text-align: left; margin-left: 10px;">My Feed <span id="feed-loader"><i class="fas fa-spin fa-circle-notch"></i></span></p>
         <div id="particle10" class="hline"></div>
         <div id="particle11" class="hline"></div>
         <div id="particle12" class="vline"></div>
-        <textarea id="note_input" rows="12" cols="44">
-            Loading your feed  
-        </textarea>
+        <div id="note_input" class="container-fluid">
+            <!-- <div class="feed row align-items-center">
+                <div class="col-4">
+                    <img src="https://i1.ytimg.com/vi/YpkJO_GrCo0/hqdefault.jpg" class="img-fluid">
+                </div>
+                <div class="col-8">
+                    <a class="title text-left" href="#"></a>
+                </div>
+            </div> -->
+        </div>
+        <p class="title" style="text-align: left; margin-left: 10px;">My Music <span id="music_loader"><i class="fas fa-spin fa-circle-notch"></i></span></p>
+        <div id="particle10" class="hline"></div>
+        <div id="particle11" class="hline"></div>
+        <div id="particle12" class="vline"></div>
+        <div id="music_feed" class="container-fluid" style="height:30vh;"></div>
     </div>
 
     <!-- Arc Reactor -->
@@ -306,10 +318,16 @@
 {% endblock %}
 {% block footer_js %}
 <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.9"></script>
+<!-- <script src="https://sdk.scdn.co/spotify-player.js"></script> -->
 <script>
 var api_endpoints = {
     "detect_mood": "{% url 'api:detect-mood' %}",
     "get-logged-in-user": "{%  url 'api:get-logged-in-user' %}",
+    "get-news": "{% url 'api:get-news' %}",
+    "save-user-preference": "{% url 'api:save-user-preference' %}",
+    "get-user-preference": "{% url 'api:get-user-preference' %}",
+    "get-youtube-videos": "{% url 'api:get-from-youtube' %}",
+    'spotify': "{% url 'api:get-spotify' %}"
 }
 </script>
 <script src="{% static 'portal/js/main.js' %}"></script>

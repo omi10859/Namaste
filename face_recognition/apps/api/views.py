@@ -1,12 +1,15 @@
+import random
+import pafy
+
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.contrib.auth import authenticate, login, logout
 
 from apps.accounts.models import User
-from apps.user_data.models import Mood
-from .utils import detect_mood
+from apps.user_data.models import Mood, UserMeta
+from .utils import detect_mood, get_spotify_feed
 
 
-from PyouPlay import get
+from PyouPlay import get as get_videos
 from newsapi import NewsApiClient
 
 def check_ajax(func):
@@ -132,27 +135,141 @@ def GetUserMoodFromImageView(request):
     mood = detect_mood(img)
 
     Mood.record_mood(request.user, mood);
+    score = Mood.guess_health(request.user)
 
     return JsonResponse({
         'status': True,
-        'mood': mood
+        'mood': {
+            'mood': mood,
+            'health_score': score
+        }
     })
 
 
 @check_ajax
-def YoutubesearchView(request, search):
-    return get.toplinks(search)
+def YoutubesearchView(request):
+    # search = request.GET.get('search', None)
+    search = 'general'
+    categories = UserMeta.get_key(request.user, 'categories')
+    videos = []
+    if categories:
+        categories = categories.value.split(',')
+        videos_l = []
+        if len(categories) > 0: 
+            for x in categories:
+                yt = get_videos.toplinks(x)
+                if len(yt) > 2:
+                    yt = yt[1:]
+                for y in yt:
+                    if "/channel/" in y:
+                        continue
+                    videos_l.append(y)
+        random.shuffle(videos_l)
+        videos_l = videos_l[:5]
+        for url in videos_l:
+            print(url)
+            v = pafy.new(url)
+            videos.append({
+                'url': url,
+                'title': v.title,
+                'description': v.description
+            })
+    else:
+        yt = get_videos.toplinks(search)
+        for url in yt:
+            v = pafy.new(url)
+            videos.append({
+                'url': url,
+                'title': v.title,
+                'description': v.description
+            })
 
+    return JsonResponse({
+        'status': True,
+        'data': videos
+    })
+
+# @check_ajax
+def NewsByNameView(request):
+    country = 'in'
+    search = ''
+    category = 'general' 
+
+    categories = UserMeta.get_key(request.user, 'categories')
+    newsapi = NewsApiClient(api_key='1e8aa2017af046b08f8db306b7c7ad70')
+    news = []
+    if categories:
+        categories = categories.value.split(',')
+        if len(categories) > 0: 
+            for x in categories:
+                if x == 'music':
+                    x = 'entertainment'
+                n = newsapi.get_top_headlines(
+                    q=search,
+                    category=x,
+                    language='en',
+                    country=country
+                )
+                if n['status'] == 'ok' and 'articles' in n:
+                    for n2 in n['articles']:
+                        news.append(n2)
+        random.shuffle(news)
+        news = news[:10]
+    else:
+        n = newsapi.get_top_headlines(
+            q=search, category=category, 
+            language='en', country=country
+        )
+        if n['status'] == 'ok' and 'articles' in n:
+            for n2 in n['articles']:
+                news.append(n2)
+    
+    return JsonResponse({
+        'status': True,
+        'data': news
+    })
 
 @check_ajax
-def NewsByNameView(country,search=None, category=None):
+def SaveUserPreferenceView(request):
 
-    newsapi = NewsApiClient(api_key='1e8aa2017af046b08f8db306b7c7ad70')
+    key = request.GET.get('key')
+    value = request.GET.get('value')
 
+    status = False
+    key_obj = UserMeta.get_key(request.user, key)
+    if key_obj:
+        key_obj.value = value
+        key_obj.save()
+        status = True
+    else:
+        if UserMeta.save_key(request.user, key, value):
+            status = True
 
-    top_headlines = newsapi.get_top_headlines(q=search,
-                                            category=category,
-                                            language='en',
-                                            country=country)
+    return JsonResponse({
+        'status': status
+    })
 
-    return top_headlines
+@check_ajax
+def GetUserPreferenceView(request):
+
+    keys = UserMeta.get_keys_for_user(request.user)
+    data = {}
+    for x in keys:
+        data[x.key] = x.value
+    
+    return JsonResponse({
+        'status': True,
+        'data': data
+    })
+
+def GetSpotifyMusicView(request):
+
+    return JsonResponse({'status': True, 'data': get_spotify_feed(request.user)})
+
+def AuthSpotifyMusicView(request):
+
+    return JsonResponse({
+        'headers': dict(request.headers),
+        'get': dict(request.GET),
+        'post': dic(request.POST)
+    })

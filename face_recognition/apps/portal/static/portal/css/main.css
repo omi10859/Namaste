@@ -599,7 +599,7 @@ body {
 
 .menuitem {
     width: 100%;
-    height: 40px;
+    min-height: 40px;
     padding: 5px;
     margin-left: 5px;
     color: #02feff;
@@ -642,9 +642,11 @@ body {
     float: right;
     margin-right: 20px;
     width: 300px;
+    max-height: 100vh;
 }
 
-#note_input {
+#note_input,
+#music_feed {
     color: rgba(2, 255, 255, 0.6);
     padding: 5px;
     border-style: none;
@@ -652,8 +654,24 @@ body {
     resize: none;
     transition: 0.3s;
     width: calc(100% - 15px);
+    height: 40vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
+::-webkit-scrollbar {
+    width: 6px;
+}
+ 
+::-webkit-scrollbar-track {
+    border-radius: 20px;
+    background: rgba(2, 255, 255, 0.15);
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+    background-color: rgba(2, 254, 255, 0.5);
+}
 #note_input:hover {
     color: #02feff;
     transition: 0.3s;
@@ -1151,4 +1169,35 @@ ul {
     color: #049372;
     font-size: 30px;
     text-align: center;
+}
+
+.my-category.selected {
+    position: relative;
+}
+.my-category.selected::before {
+    content: 'X';
+    height: 1em;
+    width: 1em;
+    position: absolute;
+    left: -0.5em;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.feed {
+    margin-top: 10px;
+    /* border-bottom: 1px  #049372; */
+}
+
+.feed .title {
+    font-size: 16px;
+    color: rgba(2, 255, 255, 0.6) !important;
+    transition: 0.5s all;
+    text-align: justify;
+}
+.feed a.title:hover, 
+.feed a.title:focus {
+    color: #02feff !important;
+    text-decoration: none;
 }
