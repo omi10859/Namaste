@@ -14,9 +14,25 @@ Another use case involves tracking of employee's health and behaviour throughout
 You have to fork and clone the project to follow the following setup guidelines:
 ### 1. Create Virtual Environment :earth_asia:
 
+```sh
+$ virtualenv -p python3  VENV_NAME
+```
+
+#### Activate
+
+```sh
+windows: > VENV_NAME/Scripts/activate
+
+linux:   $ source VENV_NAME/bin/activate
+
+macos:   $ source VENV_NAME/bin/activate
+```
 
 ### 2. Install requirements :information_source:
 
+```sh
+$ pip3 install -r requirements.txt
+```
 
 ### 3. 
 
