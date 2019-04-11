@@ -5,3 +5,4 @@ temp/
 *.log
 .env
 db.sqlite3
+namo/
